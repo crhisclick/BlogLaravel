@@ -21,7 +21,7 @@ class TagController extends Controller
     public function index()
     {
         $tags=Tag::orderBy('id','DESC')->paginate();
-        dd($tags);
+
         return view('admin.tag.index', compact('tags'));
     }
 
@@ -32,7 +32,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view('admin.tags.create');
+        return view('admin.tag.create');
     }
 
     /**
@@ -65,7 +65,7 @@ class TagController extends Controller
      * @param  \App\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function edit(Tag $tag)
+    public function edit($id)
     {
         $tag=Tag::find($id);
         return view('admin.tags.edit',compact('tag'));
