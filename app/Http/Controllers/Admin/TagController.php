@@ -56,7 +56,7 @@ class TagController extends Controller
     public function show($id)
     {
         $tag=Tag::find($id);
-        return view('admin.tags.show',compact('tag'));
+        return view('admin.tag.show',compact('tag'));
     }
 
     /**
@@ -68,7 +68,7 @@ class TagController extends Controller
     public function edit($id)
     {
         $tag=Tag::find($id);
-        return view('admin.tags.edit',compact('tag'));
+        return view('admin.tag.edit',compact('tag'));
     }
 
     /**
@@ -93,7 +93,7 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        $tag = Tag::find($id)->delte();
+        $tag = Tag::find($id)->delete();
         return back()->with('info', 'Eliminado correctamente');
     }
 }
