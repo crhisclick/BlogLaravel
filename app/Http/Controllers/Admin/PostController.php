@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
-use App\Post;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
+use App\Category;
+use App\Tag;
+use App\Post;
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts=Post::orderBy('id','DESC')
+        ->where('user_id', auth()->user()->id)
+        ->paginate();
+
+        return view('admin.post.index', compact('posts'));
     }
 
     /**
@@ -24,7 +35,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $categories= Category::orderBy('name','ASC')->pluck('name','id');
+        $tags=Tag::orderBy('name','ASC')->get();
+        return view('admin.post.create', compact('categories','tags'));
     }
 
     /**
@@ -33,9 +46,10 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
-        //
+        $post=Post::create($request->all());
+        return redirect()->route('posts.edit',$post->id)->with('info','Etiqueta creada con exito');
     }
 
     /**
@@ -44,9 +58,10 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        //
+        $post=Post::find($id);
+        return view('admin.post.show',compact('post'));
     }
 
     /**
@@ -55,9 +70,12 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit($id)
     {
-        //
+        $categories= Category::orderBy('name','ASC')->pluck('name','id');
+        $tags=Tag::orderBy('name','ASC')->get();
+        $post=Post::find($id);
+        return view('admin.post.edit',compact('post','categories','tags'));
     }
 
     /**
@@ -67,9 +85,11 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, $id)
     {
-        //
+        $post=Post::find($id);
+        $post->fill($request->all())->save();
+        return redirect()->route('posts.edit',$post->id)->with('info','Etiqueta actualizada con exito');
     }
 
     /**
@@ -78,8 +98,9 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        //
+        $post = Post::find($id)->delete();
+        return back()->with('info', 'Eliminado correctamente');
     }
 }
