@@ -10,7 +10,7 @@
                         Crear Entrada
                     </div>
                     <div class="car-body pl-2">
-                        {!!Form::open(['route'=>'posts.store'])!!}
+                        {!!Form::open(['route'=>'posts.store','files'=>true])!!}
                         @include('admin.post.partials.form')
                         {!!Form::close()!!}
                     </div>

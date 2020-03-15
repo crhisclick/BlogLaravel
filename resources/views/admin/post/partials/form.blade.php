@@ -14,7 +14,7 @@
 </div>
 <div class="form-group">
     {{Form::label('image','Imagen')}}
-    {{Form::file('image')}}
+    {{Form::file('file')}}
 </div>
 <div class="form-group">
     {{Form::label('status','Estado')}}

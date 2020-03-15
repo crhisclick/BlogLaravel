@@ -11,7 +11,7 @@
                     </div>
                     <div class="car-body pl-2">
 
-                        {!!Form::model($post,['route'=>['posts.update',$post->id], 'method'=>'PUT'])!!}
+                        {!!Form::model($post,['route'=>['posts.update',$post->id], 'method'=>'PUT','files'=>true])!!}
                         @include('admin.post.partials.form')
                         {!!Form::close()!!}
                     </div>

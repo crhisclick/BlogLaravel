@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
+
+use Illuminate\Support\Facades\Storage;
+
 use App\Category;
 use App\Tag;
 use App\Post;
@@ -49,6 +53,15 @@ class PostController extends Controller
     public function store(PostStoreRequest $request)
     {
         $post=Post::create($request->all());
+
+        //image
+        if($request->file('file')){
+            $path = Storage::disk('public')->put('image', $request->file('file'));
+            $post->fill(['file'=>asset($path)])->save();
+        }
+
+        //tags
+        $post->tags()->attach($request->get('tags'));
         return redirect()->route('posts.edit',$post->id)->with('info','Etiqueta creada con exito');
     }
 
@@ -88,7 +101,19 @@ class PostController extends Controller
     public function update(PostUpdateRequest $request, $id)
     {
         $post=Post::find($id);
+
         $post->fill($request->all())->save();
+        //image
+
+        if($request->file('file')){
+            $path = Storage::disk('public')->put('image', $request->file('file'));
+
+            $post->fill(['file'=>asset($path)])->save();
+        }
+
+        //tags
+        $post->tags()->sync($request->get('tags'));
+
         return redirect()->route('posts.edit',$post->id)->with('info','Etiqueta actualizada con exito');
     }
 
